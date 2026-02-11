@@ -1,0 +1,135 @@
+openapi: 3.0.0
+info:
+  title: ConstructFlow Execution API
+  version: 1.0.0
+  description: Field execution management API for ConstructFlow ERP
+
+servers:
+  - url: https://api.constructflow.com/v1
+    description: Production server
+
+paths:
+  /projects:
+    get:
+      summary: List projects
+      description: Get a list of construction projects
+      tags:
+        - Projects
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [planning, active, on_hold, completed]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+    post:
+      summary: Create project
+      tags:
+        - Projects
+      responses:
+        '201':
+          description: Project created
+
+  /projects/{projectId}/tasks:
+    get:
+      summary: List tasks for a project
+      tags:
+        - Tasks
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+    post:
+      summary: Create task
+      tags:
+        - Tasks
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Task created
+
+  /tasks/{taskId}/progress:
+    put:
+      summary: Update task progress
+      description: Update progress for a task (monotonic state machine)
+      tags:
+        - Tasks
+      parameters:
+        - in: path
+          name: taskId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, in_progress, completed, blocked]
+                completion_percentage:
+                  type: number
+                  minimum: 0
+                  maximum: 100
+      responses:
+        '200':
+          description: Progress updated
+
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        tenant_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          type: string
+          enum: [planning, active, on_hold, completed]
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date-time
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []

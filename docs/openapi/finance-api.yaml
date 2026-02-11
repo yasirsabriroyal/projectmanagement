@@ -1,0 +1,132 @@
+openapi: 3.0.0
+info:
+  title: ConstructFlow Finance API
+  version: 1.0.0
+  description: Financial management API for ConstructFlow ERP
+
+servers:
+  - url: https://api.constructflow.com/v1
+    description: Production server
+  - url: https://staging-api.constructflow.com/v1
+    description: Staging server
+
+paths:
+  /invoices:
+    get:
+      summary: List invoices
+      description: Get a list of invoices for the authenticated tenant
+      tags:
+        - Invoices
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [draft, sent, paid, overdue]
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  invoices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Invoice'
+                  total:
+                    type: integer
+    post:
+      summary: Create invoice
+      description: Create a new invoice
+      tags:
+        - Invoices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceCreate'
+      responses:
+        '201':
+          description: Invoice created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+
+  /payments:
+    get:
+      summary: List payments
+      tags:
+        - Payments
+      responses:
+        '200':
+          description: Successful response
+    post:
+      summary: Record payment
+      tags:
+        - Payments
+      responses:
+        '201':
+          description: Payment recorded
+
+components:
+  schemas:
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        tenant_id:
+          type: string
+          format: uuid
+        invoice_number:
+          type: string
+        amount:
+          type: number
+          format: decimal
+        status:
+          type: string
+          enum: [draft, sent, paid, overdue]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    
+    InvoiceCreate:
+      type: object
+      required:
+        - project_id
+        - amount
+      properties:
+        project_id:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: decimal
+        description:
+          type: string
+        line_items:
+          type: array
+          items:
+            type: object
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
