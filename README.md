@@ -2,6 +2,20 @@
 
 A production-grade ERP system designed to synchronize construction field execution with office accounting.
 
+## Quick Start
+
+```bash
+# 1. Copy environment files
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+
+# 2. Start all services (Postgres + Backend + Frontend)
+docker-compose up --build
+
+# 3. Visit http://localhost:3000
+# Login: admin@constructflow.com / Admin123!
+```
+
 ## Overview
 
 ConstructFlow is a comprehensive Enterprise Resource Planning (ERP) solution built specifically for the construction industry. It bridges the gap between field operations and office accounting, ensuring seamless data flow and financial integrity across the organization.
@@ -16,83 +30,59 @@ This repository employs a **multi-tenant architecture** with a strong focus on:
 ## Repository Structure
 
 ```
-/api      # Domain Services (Finance, Execution, Auth)
-/web      # Mobile-first React/Next.js Frontend
-/workers  # Async jobs (SMS, Exports, Retries)
+/backend  # Node.js + TypeScript + Express + Prisma API
+/frontend # Next.js + TypeScript Frontend
+/docs     # OpenAPI specs, ER diagrams, development guide
+/api      # Domain service READMEs (Finance, Execution, Auth)
 /infra    # DB Migrations (Postgres) and Terraform
-/docs     # OpenAPI specs and ER diagrams
+/workers  # Async jobs (SMS, Exports, Retries)
 ```
-
-### 📁 /api - Domain Services
-
-Backend services organized by domain:
-- **finance/** - Financial management, invoicing, payments
-- **execution/** - Project and task execution tracking
-- **auth/** - Authentication and authorization
-
-[View API Documentation →](./api/README.md)
-
-### 📱 /web - Mobile-First Frontend
-
-React/Next.js frontend optimized for mobile devices and field workers.
-
-[View Web Documentation →](./web/README.md)
-
-### ⚙️ /workers - Async Job Processing
-
-Background job workers for:
-- SMS notifications
-- Data exports
-- Retry mechanisms
-
-[View Workers Documentation →](./workers/README.md)
-
-### 🏗️ /infra - Infrastructure
-
-Infrastructure as code and database management:
-- **migrations/** - PostgreSQL schema migrations
-- **terraform/** - Cloud infrastructure provisioning
-
-[View Infrastructure Documentation →](./infra/README.md)
-
-### 📚 /docs - Documentation
-
-Technical documentation and specifications:
-- **openapi/** - API specifications for all services
-- **diagrams/** - ER diagrams and architecture documentation
-
-[View Documentation →](./docs/README.md)
-
-## Key Features
-
-- ✅ Multi-tenant architecture with complete data isolation
-- ✅ Real-time synchronization between field and office
-- ✅ Mobile-optimized interface for field workers
-- ✅ Comprehensive financial management
-- ✅ Project and task tracking with state machines
-- ✅ Audit trails for compliance
-- ✅ RESTful APIs with OpenAPI documentation
-
-## Getting Started
-
-Detailed setup instructions are available in each component's README:
-
-1. [API Setup](./api/README.md)
-2. [Web Frontend Setup](./web/README.md)
-3. [Infrastructure Setup](./infra/README.md)
 
 ## Technology Stack
 
-- **Backend**: [To be defined - Node.js/Python/Go]
-- **Frontend**: React, Next.js
-- **Database**: PostgreSQL
-- **Infrastructure**: Terraform
-- **Queue System**: [To be defined]
+- **Backend**: Node.js, TypeScript, Express, Prisma ORM
+- **Frontend**: Next.js 14, TypeScript, React
+- **Database**: PostgreSQL 16
+- **Authentication**: JWT (access + refresh tokens), bcrypt
+- **Validation**: Zod
+- **Logging**: Winston (structured JSON in production)
+- **Infrastructure**: Docker Compose, Terraform
+
+## Key Features
+
+- ✅ Multi-tenant architecture with organization scoping
+- ✅ JWT authentication with refresh token rotation
+- ✅ Role-Based Access Control (RBAC) — Admin, PM, Accountant, Ops
+- ✅ Idempotency key support for safe POST retries
+- ✅ Audit logging for all sensitive operations
+- ✅ Project management (CRUD + memberships)
+- ✅ Structured logging with Winston
+- ✅ Docker Compose for one-command local setup
+
+## Documentation
+
+- [Development Guide](./docs/DEVELOPMENT.md) — Setup, env vars, migrations, seeding, RBAC
+- [API Documentation](./api/README.md)
+- [Infrastructure](./infra/README.md)
+
+## Default Credentials (after seed)
+
+| Field | Value |
+|-------|-------|
+| Email | `admin@constructflow.com` |
+| Password | `Admin123!` |
+
+## API Health Check
+
+```bash
+curl http://localhost:4000/api/v1/health
+# {"status":"ok","db":"connected","timestamp":"..."}
+```
 
 ## Contributing
 
-[Contributing guidelines to be added]
+See [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) for development setup instructions.
 
 ## License
 
-[License information to be added] 
+[License information to be added]
