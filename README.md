@@ -16,78 +16,103 @@ This repository employs a **multi-tenant architecture** with a strong focus on:
 ## Repository Structure
 
 ```
-/api      # Domain Services (Finance, Execution, Auth)
+/api      # Domain Services (Finance, Execution, Auth) — Express.js
 /web      # Mobile-first React/Next.js Frontend
 /workers  # Async jobs (SMS, Exports, Retries)
 /infra    # DB Migrations (Postgres) and Terraform
 /docs     # OpenAPI specs and ER diagrams
 ```
 
-### 📁 /api - Domain Services
+## 🚀 Getting Started
 
-Backend services organized by domain:
-- **finance/** - Financial management, invoicing, payments
-- **execution/** - Project and task execution tracking
-- **auth/** - Authentication and authorization
+### Option 1 — Docker Compose (Recommended)
 
-[View API Documentation →](./api/README.md)
+Requires: [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
 
-### 📱 /web - Mobile-First Frontend
+```bash
+docker compose up --build
+```
 
-React/Next.js frontend optimized for mobile devices and field workers.
+- **Web UI** → http://localhost:3000
+- **API**    → http://localhost:3001
 
-[View Web Documentation →](./web/README.md)
+---
 
-### ⚙️ /workers - Async Job Processing
+### Option 2 — Run Locally (without Docker)
 
-Background job workers for:
-- SMS notifications
-- Data exports
-- Retry mechanisms
+Requires: [Node.js 20+](https://nodejs.org/)
 
-[View Workers Documentation →](./workers/README.md)
+**1. Start the API server**
 
-### 🏗️ /infra - Infrastructure
+```bash
+cd api
+npm install
+npm start
+# API running at http://localhost:3001
+```
 
-Infrastructure as code and database management:
-- **migrations/** - PostgreSQL schema migrations
-- **terraform/** - Cloud infrastructure provisioning
+**2. Start the web frontend** (in a new terminal)
 
-[View Infrastructure Documentation →](./infra/README.md)
+```bash
+cd web
+npm install
+npm run dev
+# UI running at http://localhost:3000
+```
 
-### 📚 /docs - Documentation
+**3. Open your browser**
 
-Technical documentation and specifications:
-- **openapi/** - API specifications for all services
-- **diagrams/** - ER diagrams and architecture documentation
+Navigate to **http://localhost:3000** to see the ConstructFlow ERP dashboard.
 
-[View Documentation →](./docs/README.md)
+---
+
+### Default Credentials (demo)
+
+| Email | Password | Role |
+|-------|----------|------|
+| `admin@constructflow.com` | `password` | Admin |
+| `manager@constructflow.com` | `password` | Manager |
+
+---
+
+## Technology Stack
+
+- **Frontend**: React, Next.js 14, Tailwind CSS
+- **Backend**: Node.js, Express.js
+- **Database**: PostgreSQL *(migrations in `/infra/migrations`)*
+- **Infrastructure**: Terraform *(configs in `/infra/terraform`)*
+- **Containerization**: Docker / Docker Compose
 
 ## Key Features
 
 - ✅ Multi-tenant architecture with complete data isolation
 - ✅ Real-time synchronization between field and office
 - ✅ Mobile-optimized interface for field workers
-- ✅ Comprehensive financial management
-- ✅ Project and task tracking with state machines
+- ✅ Comprehensive financial management (invoices, payments)
+- ✅ Project and task tracking with monotonic state machines
 - ✅ Audit trails for compliance
-- ✅ RESTful APIs with OpenAPI documentation
+- ✅ RESTful APIs matching OpenAPI specifications in `/docs/openapi`
 
-## Getting Started
+## API Endpoints
 
-Detailed setup instructions are available in each component's README:
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/v1/auth/login` | Authenticate user |
+| `GET`  | `/v1/projects` | List projects |
+| `POST` | `/v1/projects` | Create project |
+| `GET`  | `/v1/projects/:id/tasks` | List tasks |
+| `PUT`  | `/v1/tasks/:id/progress` | Update task progress |
+| `GET`  | `/v1/invoices` | List invoices |
+| `POST` | `/v1/invoices` | Create invoice |
+| `GET`  | `/v1/payments` | List payments |
+| `POST` | `/v1/payments` | Record payment |
+| `GET`  | `/health` | Health check |
 
-1. [API Setup](./api/README.md)
-2. [Web Frontend Setup](./web/README.md)
-3. [Infrastructure Setup](./infra/README.md)
+## Component Documentation
 
-## Technology Stack
-
-- **Backend**: [To be defined - Node.js/Python/Go]
-- **Frontend**: React, Next.js
-- **Database**: PostgreSQL
-- **Infrastructure**: Terraform
-- **Queue System**: [To be defined]
+- [API Documentation →](./api/README.md)
+- [Web Frontend Documentation →](./web/README.md)
+- [Infrastructure Documentation →](./infra/README.md)
 
 ## Contributing
 
@@ -95,4 +120,4 @@ Detailed setup instructions are available in each component's README:
 
 ## License
 
-[License information to be added] 
+[License information to be added]
