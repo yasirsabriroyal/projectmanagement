@@ -12,9 +12,26 @@ cp frontend/.env.example frontend/.env
 # 2. Start all services (Postgres + Backend + Frontend)
 docker-compose up --build
 
-# 3. Visit http://localhost:3000
+# 3. The seed runs automatically and creates:
+#    - Admin user: admin@constructflow.com / Admin123!
+#    - Default roles, permissions, and organization
+
+# 4. Visit http://localhost:3000
 # Login: admin@constructflow.com / Admin123!
 ```
+
+### Bootstrapping a fresh admin (alternative to seed)
+
+If you prefer to skip seeding and create the first admin manually:
+
+```bash
+# On a fresh DB (no users), no secret header needed:
+curl -X POST http://localhost:4000/api/v1/auth/bootstrap-admin \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"Admin123!","firstName":"Admin","lastName":"User"}'
+```
+
+See [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) for full details.
 
 ## Overview
 
