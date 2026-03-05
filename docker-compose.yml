@@ -37,6 +37,7 @@ services:
       FRONTEND_URL: http://localhost:3000
       LOG_LEVEL: info
       BOOTSTRAP_MODE: 'false'
+      BOOTSTRAP_ADMIN_SECRET: ${BOOTSTRAP_ADMIN_SECRET:-change-me-bootstrap-secret}
     ports:
       - '4000:4000'
     healthcheck:

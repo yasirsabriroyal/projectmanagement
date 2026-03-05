@@ -110,11 +110,14 @@ This creates:
 
 ## Creating the First Admin (Manual)
 
-If you need to create an admin without running seed:
+If you need to create an admin without running seed, use the dedicated bootstrap endpoint.
+It allows creation when either:
+- No users exist yet (fresh database), OR
+- The `X-Bootstrap-Admin-Secret` header matches `BOOTSTRAP_ADMIN_SECRET` in your env
 
 ```bash
-# Set BOOTSTRAP_MODE=true in .env, then:
-curl -X POST http://localhost:4000/api/v1/auth/register \
+# Works on a fresh DB (no users) without any secret header:
+curl -X POST http://localhost:4000/api/v1/auth/bootstrap-admin \
   -H "Content-Type: application/json" \
   -d '{
     "email": "admin@example.com",
@@ -123,9 +126,20 @@ curl -X POST http://localhost:4000/api/v1/auth/register \
     "lastName": "User"
   }'
 
-# Then assign Admin role via Prisma Studio:
-npx prisma studio
+# Or supply the BOOTSTRAP_ADMIN_SECRET header (works even when users already exist):
+curl -X POST http://localhost:4000/api/v1/auth/bootstrap-admin \
+  -H "Content-Type: application/json" \
+  -H "X-Bootstrap-Admin-Secret: your-bootstrap-secret" \
+  -d '{
+    "email": "admin2@example.com",
+    "password": "SecurePass123!",
+    "firstName": "Admin2",
+    "lastName": "User"
+  }'
 ```
+
+The response includes `accessToken`, `refreshToken`, and the created `user` object, so you can
+immediately authenticate as the new admin.
 
 ## Running Tests
 
@@ -145,6 +159,7 @@ All endpoints are prefixed with `/api/v1`.
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/health` | None | Health check |
+| POST | `/auth/bootstrap-admin` | None/Secret | Create first admin user |
 | POST | `/auth/register` | Bootstrap/Admin | Register user |
 | POST | `/auth/login` | None | Login |
 | POST | `/auth/refresh` | None | Refresh tokens |
