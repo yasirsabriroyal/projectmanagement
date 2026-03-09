@@ -38,6 +38,7 @@ services:
       LOG_LEVEL: info
       BOOTSTRAP_MODE: 'false'
       BOOTSTRAP_ADMIN_SECRET: ${BOOTSTRAP_ADMIN_SECRET:-change-me-bootstrap-secret}
+      RUN_SEED: ${RUN_SEED:-true}
     ports:
       - '4000:4000'
     healthcheck:

@@ -12,9 +12,10 @@ cp frontend/.env.example frontend/.env
 # 2. Start all services (Postgres + Backend + Frontend)
 docker-compose up --build
 
-# 3. The seed runs automatically and creates:
+# 3. The seed runs automatically (RUN_SEED=true by default) and creates:
 #    - Admin user: admin@constructflow.com / Admin123!
 #    - Default roles, permissions, and organization
+#    Set RUN_SEED=false to disable seeding (e.g. in production).
 
 # 4. Visit http://localhost:3000
 # Login: admin@constructflow.com / Admin123!
