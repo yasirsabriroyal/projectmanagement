@@ -19,12 +19,16 @@ cd projectmanagement
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 
-# 3. Start everything
+# 3. Start everything (seed runs automatically on first start)
 docker-compose up --build
 
 # 4. Visit http://localhost:3000
 # Login: admin@constructflow.com / Admin123!
 ```
+
+> **Seeding**: The database seed is controlled by the `RUN_SEED` environment variable (default: `true`).
+> The seed is idempotent — re-running it is safe. To disable seeding in production, set `RUN_SEED=false`
+> in your environment or in the `backend` service environment block of `docker-compose.yml`.
 
 ## Running Locally (without Docker)
 
@@ -76,6 +80,7 @@ npm run dev
 | `FRONTEND_URL` | CORS allowed origin | `http://localhost:3000` |
 | `LOG_LEVEL` | Winston log level | `info` |
 | `BOOTSTRAP_MODE` | Allow unauthenticated registration | `false` |
+| `RUN_SEED` | Run database seed on container startup | `true` |
 
 ### Frontend (`frontend/.env`)
 
@@ -97,9 +102,19 @@ npm run migrate
 
 ## Seeding
 
+The seed runs automatically on `docker compose up --build` when `RUN_SEED=true` (the default).
+To run seed manually:
+
 ```bash
 cd backend
 npm run seed
+```
+
+To disable automatic seeding (e.g. in production), set `RUN_SEED=false` in the backend environment:
+
+```bash
+# docker-compose.yml backend environment, or your deployment env
+RUN_SEED=false docker compose up
 ```
 
 This creates:
